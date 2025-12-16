@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiz • Relacionamento</title>
+  <meta name="description" content="Quiz minimalista, escuro e vermelho, tema relacionamento." />
+  <style>
+    :root{
+      --bg:#07060a;
+      --card:#0e0b12;
+      --text:#f4f1f7;
+      --muted:#b6a9c7;
+      --line:rgba(255,255,255,.09);
+      --red:#ff2d55;
+      --red2:#ff3b30;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius:18px;
+      --max: 980px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 18% 12%, rgba(255,45,85,.18), transparent 58%),
+        radial-gradient(900px 650px at 88% 18%, rgba(255,59,48,.10), transparent 60%),
+        var(--bg);
+      line-height:1.45;
+    }
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:26px 16px 70px}
+
+    /* Top */
+    .top{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:10px 0 18px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; letter-spacing:.2px;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: linear-gradient(135deg, var(--red), var(--red2));
+      box-shadow: 0 0 0 6px rgba(255,45,85,.10);
+    }
+    .pill{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      border-radius:999px;
+      padding:9px 12px;
+      font-size:12.5px;
+      white-space:nowrap;
+    }
+
+    /* Card */
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero{padding:22px}
+
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(26px, 3.2vw, 40px);
+      line-height:1.08;
+      letter-spacing:-.3px;
+    }
+    .sub{margin:0 0 16px; color:var(--muted); font-size:15px}
+
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .btn{
+      border:0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-weight:800;
+      cursor:pointer;
+      transition: transform .06s ease, opacity .2s ease;
+      text-decoration:none;
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      user-select:none;
+    }
+    .btn:active{transform:scale(.99)}
+    .btnPrimary{
+      background: linear-gradient(135deg, var(--red), var(--red2));
+      color:#08060b;
+    }
+    .btnGhost{
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border:1px solid var(--line);
+    }
+
+    /* Quiz */
+    .quiz{margin-top:14px; padding:18px; display:none}
+    .progress{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; margin-bottom:12px;
+    }
+    .bar{
+      height:10px;
+      border-radius:999px;
+      overflow:hidden;
+      flex:1;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+    }
+    .fill{
+      height:100%; width:0%;
+      background: linear-gradient(90deg, var(--red), var(--red2));
+      transition: width .25s ease;
+    }
+    .step{font-size:12px; color:var(--muted); white-space:nowrap}
+
+    .q{
+      margin: 10px 0 10px;
+      font-size: 17px;
+      letter-spacing:-.2px;
+    }
+
+    .options{display:grid; gap:10px; margin-top:10px}
+    .opt{
+      width:100%;
+      text-align:left;
+      padding:14px 14px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      color: var(--text);
+      cursor:pointer;
+      transition: transform .06s ease, background .2s ease, border-color .2s ease;
+      font-weight:750;
+    }
+    .opt:hover{background: rgba(255,255,255,.04)}
+    .opt:active{transform: scale(.995)}
+
+    .footer{
+      margin-top:14px;
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      align-items:center;
+    }
+    .hint{font-size:12px; color:var(--muted)}
+
+    .result{
+      margin-top:12px;
+      padding:16px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      display:none;
+    }
+    .result h2{margin:0 0 8px; font-size:18px}
+    .result p{margin:0; color:var(--muted)}
+
+    .tiny{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12px;
+      opacity:.9;
+    }
+
+    /* Small screens */
+    @media (max-width: 720px){
+      .hero{padding:18px}
+      .pill{display:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand"><span class="dot"></span> Relacionamento</div>
+      <div class="pill">Quiz minimalista • interativo • 6 perguntas</div>
+    </div>
+
+    <div class="card hero">
+      <h1>O que está travando a reconexão?</h1>
+      <p class="sub">Responda em menos de 1 minuto e veja um direcionamento simples (sem joguinhos e sem drama).</p>
+
+      <div class="row">
+        <button class="btn btnPrimary" id="startBtn">Começar →</button>
+        <button class="btn btnGhost" id="resetBtn" style="display:none">Recomeçar</button>
+      </div>
+
+      <div class="tiny">* Este quiz é apenas orientativo e não substitui ajuda profissional. Resultados variam.</div>
+    </div>
+
+    <div class="card quiz" id="quiz">
+      <div class="progress">
+        <div class="bar"><div class="fill" id="fill"></div></div>
+        <div class="step" id="step">1/6</div>
+      </div>
+
+      <div class="q" id="q"></div>
+      <div class="options" id="options"></div>
+
+      <div class="footer">
+        <button class="btn btnGhost" id="backBtn" style="visibility:hidden">← Voltar</button>
+        <div class="hint" id="hint">Toque em uma opção para avançar.</div>
+      </div>
+
+      <div class="result" id="result"></div>
+    </div>
+  </div>
+
+<script>
+  // --- CONFIG ---
+  // Se quiser CTA no final, coloque seu link aqui.
+  const CTA_URL = ""; // ex: "https://seulink.com"
+
+  // Quiz curto, minimalista (6 etapas)
+  const quiz = [
+    {
+      t: "Como está o contato hoje?",
+      a: [
+        {label:"Zero contato", tag:"distância", w:2},
+        {label:"Frio e curto", tag:"distância", w:2},
+        {label:"Vai e volta", tag:"instável", w:2},
+        {label:"Existe, mas sem conexão", tag:"ruído", w:2}
+      ]
+    },
+    {
+      t: "O que mais te incomoda nessa fase?",
+      a: [
+        {label:"Ele(a) sumiu emocionalmente", tag:"distância", w:2},
+        {label:"Discussões / tensão", tag:"ruído", w:2},
+        {label:"Insegurança / ansiedade", tag:"ansiedade", w:2},
+        {label:"Ciúmes / desconfiança", tag:"confiança", w:2}
+      ]
+    },
+    {
+      t: "Quando você tenta falar, a reação costuma ser…",
+      a: [
+        {label:"Foge do assunto", tag:"distância", w:2},
+        {label:"Se irrita", tag:"ruído", w:2},
+        {label:"Promete e não muda", tag:"instável", w:2},
+        {label:"Escuta, mas não aprofunda", tag:"ruído", w:1}
+      ]
+    },
+    {
+      t: "O que você mais fez até agora?",
+      a: [
+        {label:"Cobrei explicações", tag:"ruído", w:2},
+        {label:"Tentei me afastar", tag:"distância", w:1},
+        {label:"Fiquei esperando sinais", tag:"ansiedade", w:2},
+        {label:"Agi normal, mas doendo", tag:"ansiedade", w:1}
+      ]
+    },
+    {
+      t: "Sobre confiança, qual é o ponto?",
+      a: [
+        {label:"Não confio mais", tag:"confiança", w:2},
+        {label:"Tenho dúvidas", tag:"confiança", w:1},
+        {label:"Confio, mas estou magoada", tag:"ruído", w:1},
+        {label:"Não é o problema", tag:"neutro", w:0}
+      ]
+    },
+    {
+      t: "Se você pudesse escolher 1 resultado agora, seria…",
+      a: [
+        {label:"Voltar a ser prioridade", tag:"distância", w:2},
+        {label:"Voltar a ter paz", tag:"ruído", w:2},
+        {label:"Sentir segurança", tag:"ansiedade", w:2},
+        {label:"Reconstruir confiança", tag:"confiança", w:2}
+      ]
+    }
+  ];
+
+  const elQuiz = document.getElementById('quiz');
+  const startBtn = document.getElementById('startBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const backBtn = document.getElementById('backBtn');
+  const qEl = document.getElementById('q');
+  const optEl = document.getElementById('options');
+  const fill = document.getElementById('fill');
+  const stepEl = document.getElementById('step');
+  const hint = document.getElementById('hint');
+  const result = document.getElementById('result');
+
+  let step = 0;
+  let chosen = [];
+
+  function smoothToQuiz(){
+    elQuiz.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function pct(){
+    return Math.round((step / quiz.length) * 100);
+  }
+
+  function render(){
+    result.style.display = 'none';
+    hint.style.display = 'block';
+    optEl.style.display = 'grid';
+
+    fill.style.width = pct() + '%';
+    stepEl.textContent = `${step+1}/${quiz.length}`;
+    backBtn.style.visibility = step === 0 ? 'hidden' : 'visible';
+
+    const q = quiz[step];
+    qEl.textContent = q.t;
+
+    optEl.innerHTML = '';
+    q.a.forEach((o, idx) => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = o.label;
+      b.onclick = () => pick(idx);
+      optEl.appendChild(b);
+    });
+  }
+
+  function pick(idx){
+    chosen[step] = idx;
+    if(step < quiz.length - 1){
+      step++;
+      render();
+    }else{
+      showResult();
+    }
+  }
+
+  function back(){
+    if(step > 0){
+      step--;
+      render();
+    }
+  }
+
+  function reset(){
+    step = 0;
+    chosen = [];
+    render();
+  }
+
+  function showResult(){
+    // pontuação por categoria
+    const buckets = {distância:0, ruído:0, ansiedade:0, confiança:0, instável:0, neutro:0};
+
+    chosen.forEach((idx, i) => {
+      if(idx == null) return;
+      const ans = quiz[i].a[idx];
+      buckets[ans.tag] = (buckets[ans.tag] || 0) + ans.w;
+    });
+
+    // pega top
+    const sorted = Object.entries(buckets).sort((a,b)=> b[1]-a[1]);
+    const top = sorted[0][0];
+
+    let title = '';
+    let text = '';
+
+    if(top === 'distância'){
+      title = 'O problema não é falta de sentimento';
+      text = 'O que está bloqueando a reconexão é a distância emocional criada por pressão, ruído e tentativas erradas. Quando isso é ajustado, o vínculo tende a responder.';
+    }else if(top === 'ruído'){
+      title = 'O vínculo existe, mas está abafado';
+      text = 'Discussões, cobranças e tensão emocional estão impedindo a reconexão natural. Reduzir o atrito é o primeiro passo para ele(a) se reaproximar.';
+    }else if(top === 'ansiedade'){
+      title = 'Sua ansiedade está sabotando o resultado';
+      text = 'A conexão não se perde — ela se retrai quando sente pressão. Quando você retoma segurança emocional, o jogo muda completamente.';
+    }else if(top === 'confiança'){
+      title = 'A reconexão depende de previsibilidade';
+      text = 'Sem segurança emocional, não existe entrega. Quando a confiança começa a ser restaurada, o vínculo volta a fluir.';
+    }else if(top === 'instável'){
+      title = 'Vai e volta não é o fim';
+      text = 'Instabilidade indica vínculo ativo, mas mal conduzido. Com o ritmo certo, a decisão de voltar tende a partir dele(a).';
+    }else{
+      title = 'O bloqueio é pontual';
+      text = 'Pequenos ajustes estratégicos de comportamento e comunicação costumam destravar a reconexão.';
+    }
+
+    fill.style.width = '100%';
+    stepEl.textContent = `${quiz.length}/${quiz.length}`;
+
+    result.innerHTML = `
+      <h2>${title}</h2>
+      <p>${text}</p>
+
+      <div style="margin-top:14px; padding:14px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,.02)">
+        <strong style="color:var(--text)">Boa notícia:</strong>
+        <p style="margin:6px 0 0; color:var(--muted)">
+          O resultado que você deseja <b>pode ser alcançado</b> quando você aplica o método certo.
+          É exatamente isso que você vai encontrar no produto
+          <b style="color:var(--text)">A Manipulação Silenciosa</b>.
+        </p>
+      </div>
+
+      <div style="margin-top:12px; color:var(--muted)">
+        Dentro do método você aprende como:
+        <ul style="margin:8px 0 0 18px">
+          <li>Despertar reconexão sem implorar ou discutir</li>
+          <li>Usar silêncio e presença como gatilhos emocionais</li>
+          <li>Fazer a reaproximação parecer iniciativa dele(a)</li>
+        </ul>
+      </div>
+
+      <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap">
+        <a class="btn btnPrimary" href="CTA_URL_AQUI" target="_blank" rel="noopener">Acessar A Manipulação Silenciosa →</a>
+        <button class="btn btnGhost" onclick="window.__restartQuiz()">Refazer o quiz</button>
+      </div>
+
+      <div class="tiny" style="margin-top:14px">
+        Aviso: este produto não promete controlar decisões de ninguém. Ele ensina estratégias de comunicação, vínculo emocional e posicionamento.
+      </div>
+    `;
+
+    optEl.style.display = 'none';
+    hint.style.display = 'none';
+    result.style.display = 'block';
+
+    smoothToQuiz();
+  }
+
+  // Expondo para o botão inline do resultado
+  window.__restartQuiz = function(){
+    reset();
+    smoothToQuiz();
+  };
+
+  startBtn.addEventListener('click', () => {
+    elQuiz.style.display = 'block';
+    resetBtn.style.display = 'inline-flex';
+    reset();
+    smoothToQuiz();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    elQuiz.style.display = 'block';
+    reset();
+    smoothToQuiz();
+  });
+
+  backBtn.addEventListener('click', back);
+</script>
+</body>
+</html>
